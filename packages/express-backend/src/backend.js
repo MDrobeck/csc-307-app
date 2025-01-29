@@ -1,8 +1,10 @@
 // backend.js
+import cors from "cors";
 import express from "express";
 
 const app = express();
 const port = 8000;
+app.use(express.json());
 
 const users = {
     "users_list": [ //used Boomerang to POST to http://localhost:8000/users Cindy, then used get to GET this list from there, and pasted it into here to make it permanent
@@ -39,7 +41,8 @@ const users = {
     ]
   }
 
-app.use(express.json());  
+  app.use(cors());
+
 
   const findUserByName = (name) => {
     return users["users_list"].filter(
@@ -94,14 +97,21 @@ app.use(express.json());
         res.status(404).send("ID Not Found");
     }else{
         users["users_list"].splice(index,1);
-        res.status(200).send();
+        res.status(201).send();
     }
   })
 
   app.post("/users", (req, res) => {
+
+    //console.log("Received Content-Type:", req.headers["content-type"]);
+    //console.log("Received body:", req.body);
     const userToAdd = req.body;
+    if (!userToAdd.id || !userToAdd.name || !userToAdd.job) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+    
     addUser(userToAdd);
-    res.send();
+    res.status(201).json(userToAdd);
   });
 
 app.listen(port, () => {
