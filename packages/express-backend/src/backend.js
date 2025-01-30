@@ -53,6 +53,9 @@ const users = {
   const findUserByJobandName = (name, job) => {
     return users["users_list"].filter((user) => user["name"] === name && user["job"] == job);
 }
+  const generateID  = () => {
+    return Math.random().toString(36).substring(2,8);
+  }
 
   app.get("/users", (req, res) => {
     const name = req.query.name;
@@ -86,8 +89,9 @@ const users = {
   });
 
   const addUser = (user) => {
-    users["users_list"].push(user);
-    return user;
+    const newUser = {id : generateID(), ...user}
+    users["users_list"].push(newUser);
+    return newUser;
   };
   
   app.delete("/users/:id", (req,res) =>{
@@ -97,7 +101,7 @@ const users = {
         res.status(404).send("ID Not Found");
     }else{
         users["users_list"].splice(index,1);
-        res.status(201).send();
+        res.status(204).send();
     }
   })
 
@@ -106,12 +110,11 @@ const users = {
     //console.log("Received Content-Type:", req.headers["content-type"]);
     //console.log("Received body:", req.body);
     const userToAdd = req.body;
-    if (!userToAdd.id || !userToAdd.name || !userToAdd.job) {
+    if (!userToAdd.name || !userToAdd.job) {
         return res.status(400).json({ error: "Missing required fields" });
     }
-    
-    addUser(userToAdd);
-    res.status(201).json(userToAdd);
+    const newUser = addUser(userToAdd);
+    res.status(201).json(newUser);
   });
 
 app.listen(port, () => {
