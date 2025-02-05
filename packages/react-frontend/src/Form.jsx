@@ -14,6 +14,25 @@ import React, { useState } from "react";
       props.handleSubmit(person);
       setPerson({ name: "", job: "" });
     }
+  //   try {
+  //     const response = await fetch("http://localhost:8000/users", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(person),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to submit data");
+  //     }
+  //     const newUser = await response.json();
+  //   props.handleSubmit(newUser);
+  //   setPerson({ name: "", job: ""});
+    
+  // } catch (error){
+  //   console.error("Error submitting form");
+  // }
 }
 
   function handleChange(event) {
